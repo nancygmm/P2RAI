@@ -1,0 +1,496 @@
+[
+ {
+  "id": "ej-01",
+  "hoursAgo": 3,
+  "title": "Cierre parcial de la calzada Roosevelt por trabajos de drenaje",
+  "summary": "La municipalidad anunció cierres nocturnos durante dos semanas en un tramo de la calzada Roosevelt.",
+  "summaryOrigin": "humano",
+  "body": "Los trabajos se realizarán de 21:00 a 5:00 horas. Se habilitarán rutas alternas señalizadas y agentes de tránsito apoyarán en los puntos de mayor carga. La comuna pidió a los conductores planificar sus recorridos.",
+  "topics": [
+   "transporte"
+  ],
+  "scope": "local",
+  "places": [
+   {
+    "city": "Ciudad de Guatemala",
+    "department": "Guatemala",
+    "country": "Guatemala",
+    "region": "Centroamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Municipalidad (ejemplo)",
+    "url": "https://muni-guatemala.example.com/nota",
+    "type": "oficial",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-02",
+  "hoursAgo": 6,
+  "title": "Feria del libro abre sus puertas en el centro histórico",
+  "summary": "Más de cien expositores participan en la feria, que tendrá entrada gratuita durante el fin de semana.",
+  "summaryOrigin": "humano",
+  "body": "La programación incluye presentaciones de autores nacionales, talleres para niños y una sección dedicada a editoriales independientes.",
+  "topics": [
+   "cultura",
+   "educación"
+  ],
+  "scope": "local",
+  "places": [
+   {
+    "city": "Ciudad de Guatemala",
+    "department": "Guatemala",
+    "country": "Guatemala",
+    "region": "Centroamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Diario Capital (ejemplo)",
+    "url": "https://diario-capital.example.com/nota",
+    "type": "medio",
+    "supports": "confirma"
+   },
+   {
+    "name": "Radio Centro (ejemplo)",
+    "url": "https://radio-centro.example.com/nota",
+    "type": "medio",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-03",
+  "hoursAgo": 5,
+  "title": "Antigua Guatemala restringe el paso de vehículos pesados en el casco",
+  "summary": "La medida busca proteger las calles empedradas y entrará en vigor el próximo lunes.",
+  "summaryOrigin": "humano",
+  "body": "El concejo municipal aprobó la restricción para vehículos de más de 3.5 toneladas. Los comercios podrán abastecerse en horario de madrugada.",
+  "topics": [
+   "transporte",
+   "cultura"
+  ],
+  "scope": "local",
+  "places": [
+   {
+    "city": "Antigua Guatemala",
+    "department": "Sacatepéquez",
+    "country": "Guatemala",
+    "region": "Centroamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Concejo Municipal de Antigua (ejemplo)",
+    "url": "https://muni-antigua.example.com/nota",
+    "type": "oficial",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-04",
+  "hoursAgo": 10,
+  "title": "Reportan caída de ceniza en comunidades de Sacatepéquez",
+  "summary": "Vecinos reportan ceniza fina en varios municipios; las autoridades aún no emiten un boletín.",
+  "summaryOrigin": "humano",
+  "body": "Los reportes provienen de redes sociales y de un medio local. No se ha confirmado el alcance ni se han anunciado medidas. Esta nota se actualizará cuando exista información oficial.",
+  "topics": [
+   "clima",
+   "seguridad"
+  ],
+  "scope": "local",
+  "places": [
+   {
+    "department": "Sacatepéquez",
+    "country": "Guatemala",
+    "region": "Centroamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Noticias del Valle (ejemplo)",
+    "url": "https://noticias-valle.example.com/nota",
+    "type": "medio",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-05",
+  "hoursAgo": 8,
+  "title": "Xela inaugura ciclovía de cuatro kilómetros",
+  "summary": "La nueva ciclovía conecta el parque central con la zona universitaria de Quetzaltenango.",
+  "summaryOrigin": "humano",
+  "body": "El proyecto incluye señalización, iluminación y estacionamientos para bicicletas. La municipalidad prevé una segunda fase el próximo año.",
+  "topics": [
+   "transporte",
+   "deportes"
+  ],
+  "scope": "local",
+  "places": [
+   {
+    "city": "Quetzaltenango",
+    "department": "Quetzaltenango",
+    "country": "Guatemala",
+    "region": "Centroamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Municipalidad de Quetzaltenango (ejemplo)",
+    "url": "https://muni-xela.example.com/nota",
+    "type": "oficial",
+    "supports": "confirma"
+   },
+   {
+    "name": "El Altense (ejemplo)",
+    "url": "https://el-altense.example.com/nota",
+    "type": "medio",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-06",
+  "hoursAgo": 20,
+  "title": "Cobán recibe a miles de visitantes por festival de orquídeas",
+  "summary": "El festival anual reúne a cultivadores de Alta Verapaz y de países vecinos.",
+  "summaryOrigin": "humano",
+  "body": "Los organizadores estiman una ocupación hotelera alta durante la semana. Se exhiben especies nativas y hay recorridos guiados.",
+  "topics": [
+   "cultura",
+   "ciencia"
+  ],
+  "scope": "local",
+  "places": [
+   {
+    "city": "Cobán",
+    "department": "Alta Verapaz",
+    "country": "Guatemala",
+    "region": "Centroamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Comité del Festival (ejemplo)",
+    "url": "https://festival-orquideas.example.com/nota",
+    "type": "primaria",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-07",
+  "hoursAgo": 4,
+  "title": "Congreso aprueba el presupuesto nacional para el próximo año",
+  "summary": "El presupuesto fue aprobado tras una sesión de más de diez horas; educación y salud reciben los mayores aumentos.",
+  "summaryOrigin": "humano",
+  "body": "El decreto pasa ahora a sanción. Analistas señalan que el financiamiento dependerá en parte de nueva deuda. Los detalles por ministerio se publicarán en el diario oficial.",
+  "topics": [
+   "política",
+   "economía"
+  ],
+  "scope": "nacional",
+  "places": [
+   {
+    "country": "Guatemala",
+    "region": "Centroamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Diario Oficial (ejemplo)",
+    "url": "https://diario-oficial.example.com/nota",
+    "type": "oficial",
+    "supports": "confirma"
+   },
+   {
+    "name": "Diario Capital (ejemplo)",
+    "url": "https://diario-capital.example.com/nota",
+    "type": "medio",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-08",
+  "hoursAgo": 14,
+  "title": "Versiones encontradas sobre el aumento a la tarifa eléctrica",
+  "summary": "Una fuente afirma que la tarifa subirá el próximo trimestre; el ente regulador dice que aún no hay decisión.",
+  "summaryOrigin": "humano",
+  "body": "Un medio publicó que el ajuste ya fue acordado. El regulador respondió que el cálculo sigue en revisión y que no hay resolución firmada. Hasta que exista un documento oficial, el dato no está confirmado.",
+  "topics": [
+   "economía"
+  ],
+  "scope": "nacional",
+  "places": [
+   {
+    "country": "Guatemala",
+    "region": "Centroamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Portal Económico (ejemplo)",
+    "url": "https://portal-economico.example.com/nota",
+    "type": "medio",
+    "supports": "confirma"
+   },
+   {
+    "name": "Ente regulador (ejemplo)",
+    "url": "https://regulador.example.com/nota",
+    "type": "oficial",
+    "supports": "contradice"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-09",
+  "hoursAgo": 30,
+  "title": "Campaña nacional de vacunación amplía horarios en centros de salud",
+  "summary": "Los centros de salud atenderán también los sábados durante el próximo mes.",
+  "summaryOrigin": "ia",
+  "body": "La campaña cubre el esquema infantil y refuerzos para adultos mayores. El ministerio publicó la lista de centros por departamento.",
+  "topics": [
+   "salud"
+  ],
+  "scope": "nacional",
+  "places": [
+   {
+    "country": "Guatemala",
+    "region": "Centroamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Ministerio de Salud (ejemplo)",
+    "url": "https://ministerio-salud.example.com/nota",
+    "type": "oficial",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-10",
+  "hoursAgo": 9,
+  "title": "Países centroamericanos acuerdan agilizar el paso de mercancías en fronteras",
+  "summary": "El acuerdo reduce trámites en aduanas y se aplicará de forma gradual.",
+  "summaryOrigin": "humano",
+  "body": "Los ministros de economía firmaron un protocolo para unificar formularios. Los transportistas esperan menores tiempos de espera en frontera.",
+  "topics": [
+   "economía",
+   "transporte"
+  ],
+  "scope": "regional",
+  "places": [
+   {
+    "region": "Centroamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Secretaría regional (ejemplo)",
+    "url": "https://secretaria-regional.example.com/nota",
+    "type": "oficial",
+    "supports": "confirma"
+   },
+   {
+    "name": "Agencia Istmo (ejemplo)",
+    "url": "https://agencia-istmo.example.com/nota",
+    "type": "medio",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-11",
+  "hoursAgo": 7,
+  "title": "San Salvador estrena línea de buses eléctricos",
+  "summary": "La nueva línea cubre el corredor oriente-poniente con veinte unidades.",
+  "summaryOrigin": "humano",
+  "body": "Las autoridades indicaron que la tarifa se mantiene y que la flota crecerá el próximo año.",
+  "topics": [
+   "transporte",
+   "tecnología"
+  ],
+  "scope": "local",
+  "places": [
+   {
+    "city": "San Salvador",
+    "department": "San Salvador",
+    "country": "El Salvador",
+    "region": "Centroamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Alcaldía de San Salvador (ejemplo)",
+    "url": "https://alcaldia-ss.example.com/nota",
+    "type": "oficial",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-12",
+  "hoursAgo": 12,
+  "title": "Ciudad de México prueba alerta sísmica en teléfonos móviles",
+  "summary": "El simulacro enviará un mensaje de prueba a todos los teléfonos de la capital.",
+  "summaryOrigin": "humano",
+  "body": "La prueba busca medir cobertura y tiempos de entrega. Las autoridades pidieron no llamar a los números de emergencia durante el ejercicio.",
+  "topics": [
+   "seguridad",
+   "tecnología"
+  ],
+  "scope": "local",
+  "places": [
+   {
+    "city": "Ciudad de México",
+    "department": "Ciudad de México",
+    "country": "México",
+    "region": "Norteamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Protección Civil (ejemplo)",
+    "url": "https://proteccion-civil.example.com/nota",
+    "type": "oficial",
+    "supports": "confirma"
+   },
+   {
+    "name": "Canal Metropolitano (ejemplo)",
+    "url": "https://canal-metro.example.com/nota",
+    "type": "medio",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-13",
+  "hoursAgo": 5,
+  "title": "Cumbre climática cierra con acuerdo de financiamiento para adaptación",
+  "summary": "Los países acordaron un fondo para adaptación climática; el monto final quedó por debajo de lo solicitado.",
+  "summaryOrigin": "humano",
+  "body": "El texto compromete aportes anuales y deja para el próximo año las reglas de acceso al fondo. Delegaciones de países vulnerables calificaron el resultado de insuficiente.",
+  "topics": [
+   "clima",
+   "política"
+  ],
+  "scope": "internacional",
+  "places": [],
+  "sources": [
+   {
+    "name": "Secretaría de la cumbre (ejemplo)",
+    "url": "https://cumbre-clima.example.com/nota",
+    "type": "primaria",
+    "supports": "confirma"
+   },
+   {
+    "name": "Agencia Mundial (ejemplo)",
+    "url": "https://agencia-mundial.example.com/nota",
+    "type": "medio",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-14",
+  "hoursAgo": 16,
+  "title": "Madrid limita el acceso de coches al centro durante episodios de contaminación",
+  "summary": "El ayuntamiento activará restricciones automáticas cuando se superen los umbrales de calidad del aire.",
+  "summaryOrigin": "humano",
+  "body": "La medida afecta a vehículos sin distintivo ambiental. Habrá refuerzo del transporte público en los días de restricción.",
+  "topics": [
+   "transporte",
+   "salud"
+  ],
+  "scope": "local",
+  "places": [
+   {
+    "city": "Madrid",
+    "department": "Comunidad de Madrid",
+    "country": "España",
+    "region": "Europa"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Ayuntamiento de Madrid (ejemplo)",
+    "url": "https://ayto-madrid.example.com/nota",
+    "type": "oficial",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-15",
+  "hoursAgo": 26,
+  "title": "Organismo internacional alerta de un nuevo brote respiratorio",
+  "summary": "Se investigan casos en tres países; todavía no se conoce el origen ni la gravedad.",
+  "summaryOrigin": "humano",
+  "body": "El organismo pidió reforzar la vigilancia. Por ahora no hay recomendaciones de viaje. La información es preliminar y puede cambiar.",
+  "topics": [
+   "salud",
+   "ciencia"
+  ],
+  "scope": "internacional",
+  "places": [],
+  "sources": [
+   {
+    "name": "Agencia Mundial (ejemplo)",
+    "url": "https://agencia-mundial.example.com/nota",
+    "type": "medio",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ },
+ {
+  "id": "ej-16",
+  "hoursAgo": 2,
+  "title": "Bogotá amplía el horario del transporte masivo los fines de semana",
+  "summary": "El servicio operará una hora más los viernes y sábados.",
+  "summaryOrigin": "humano",
+  "body": "La empresa operadora indicó que la medida responde a la demanda nocturna y se evaluará en tres meses.",
+  "topics": [
+   "transporte"
+  ],
+  "scope": "local",
+  "places": [
+   {
+    "city": "Bogotá",
+    "department": "Cundinamarca",
+    "country": "Colombia",
+    "region": "Sudamérica"
+   }
+  ],
+  "sources": [
+   {
+    "name": "Empresa operadora (ejemplo)",
+    "url": "https://operadora-bogota.example.com/nota",
+    "type": "primaria",
+    "supports": "confirma"
+   }
+  ],
+  "image": null
+ }
+]

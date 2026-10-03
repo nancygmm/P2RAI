@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', '') == 'admin';
+    }
+
+    // Noticias: cualquier usuario autenticado lee; solo admin escribe.
+    match /articles/{id} {
+      allow read: if signedIn();
+      allow write: if isAdmin();
+    }
+
+    // Perfil: cada quien el suyo. Nadie puede asignarse ni cambiar su propio rol
+    // (el rol admin se pone a mano en la consola de Firebase).
+    match /users/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn() && request.auth.uid == uid && !('role' in request.resource.data);
+      allow update: if signedIn() && request.auth.uid == uid &&
+        request.resource.data.get('role', null) == resource.data.get('role', null);
+    }
+
+    // Senales de comportamiento: solo crear las propias.
+    match /events/{id} {
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+    }
+
+    // aiUsage, meta/budget y chatLimits: solo el servidor (Admin SDK). Todo lo demas, denegado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
