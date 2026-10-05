@@ -27,6 +27,9 @@ npm run build      # compilación de producción
 
 ## Configuración real
 
+> Variables de entorno, claves necesarias y cómo replicar el entorno (en Vercel y en local):
+> ver [docs/configuracion.md](docs/configuracion.md).
+
 La configuración completa consta de siete pasos:
 
 1. **Firebase.** El proyecto requiere Authentication con el proveedor Google y Firestore.
