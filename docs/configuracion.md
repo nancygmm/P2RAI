@@ -12,18 +12,18 @@ No hace falta que cada quien cree su propio proyecto.
 
 ## 1. Variables de entorno
 
-| Variable | ¿Secreto? | Para qué | De dónde sale |
-| --- | --- | --- | --- |
-| `NEXT_PUBLIC_FIREBASE_API_KEY` | No (pública) | Config del cliente Firebase | Consola Firebase → ⚙️ Configuración del proyecto → Tus apps → SDK setup |
-| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | No (pública) | Config del cliente Firebase | Igual que arriba (`projectId`) |
-| `NEXT_PUBLIC_FIREBASE_APP_ID` | No (pública) | Config del cliente Firebase | Igual que arriba (`appId`) |
-| `FIREBASE_SERVICE_ACCOUNT` | **SÍ** | Admin SDK en el servidor (verifica tokens, rutas `/api/*`, seed) | Consola Firebase → Configuración → Cuentas de servicio → Generar nueva clave privada (JSON). Se guarda en `.env.local` **en base64 o en una sola línea** |
-| `OPENAI_API_KEY` | **SÍ** | Llamadas al modelo (chat IA) | Panel de OpenAI. Ponerle **límite de gasto** |
-| `OPENAI_MODEL` | No | Identificador del modelo | Panel de OpenAI (hoy `gpt-5.6-luna` es *placeholder*, confirmar) |
-| `AI_PRICE_IN` / `AI_PRICE_OUT` | No | Precio USD por 1M tokens, para calcular el gasto | Panel de OpenAI |
-| `AI_MOCK` | No | `1` = chat sin IA (modo simulado); `0` = IA real | Decisión del equipo |
-| `AI_BUDGET_CAP_USD` | No | Tope de gasto (default 14; reserva 20 − tope) | Decisión del equipo |
-| `CHAT_DAILY_LIMIT` | No | Preguntas de chat por usuario al día (default 30) | Decisión del equipo |
+| Variable                            | ¿Secreto?    | Para qué                                                         | De dónde sale                                                                                                                                                       |
+| ----------------------------------- | ------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_FIREBASE_API_KEY`    | No (pública) | Config del cliente Firebase                                       | Consola Firebase → ⚙️ Configuración del proyecto → Tus apps → SDK setup                                                                                        |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | No (pública) | Config del cliente Firebase                                       | Igual que arriba (`projectId`)                                                                                                                                     |
+| `NEXT_PUBLIC_FIREBASE_APP_ID`     | No (pública) | Config del cliente Firebase                                       | Igual que arriba (`appId`)                                                                                                                                         |
+| `FIREBASE_SERVICE_ACCOUNT`        | **SÍ** | Admin SDK en el servidor (verifica tokens, rutas`/api/*`, seed) | Consola Firebase → Configuración → Cuentas de servicio → Generar nueva clave privada (JSON). Se guarda en`.env.local` **en base64 o en una sola línea** |
+| `OPENAI_API_KEY`                  | **SÍ** | Llamadas al modelo (chat IA)                                      | Panel de OpenAI. Ponerle**límite de gasto**                                                                                                                   |
+| `OPENAI_MODEL`                    | No            | Identificador del modelo                                          | Panel de OpenAI (hoy`gpt-5.6-luna` es *placeholder*, confirmar)                                                                                                  |
+| `AI_PRICE_IN` / `AI_PRICE_OUT`  | No            | Precio USD por 1M tokens, para calcular el gasto                  | Panel de OpenAI                                                                                                                                                      |
+| `AI_MOCK`                         | No            | `1` = chat sin IA (modo simulado); `0` = IA real              | Decisión del equipo                                                                                                                                                 |
+| `AI_BUDGET_CAP_USD`               | No            | Tope de gasto (default 14; reserva 20 − tope)                    | Decisión del equipo                                                                                                                                                 |
+| `CHAT_DAILY_LIMIT`                | No            | Preguntas de chat por usuario al día (default 30)                | Decisión del equipo                                                                                                                                                 |
 
 Las `NEXT_PUBLIC_*` son **públicas por diseño** (viajan al navegador); no son un secreto, pero por
 limpieza tampoco las fijamos en el código: se leen de la consola de Firebase o se bajan con
@@ -53,7 +53,7 @@ Para correr:
 
 ```bash
 npm install
-npm run dev        
+npm run dev      
 ```
 
 > Sin ningún `.env.local`, la app corre en **modo demo** (datos de ejemplo, sin Firebase ni IA):
@@ -108,6 +108,7 @@ Nunca por el repo ni por chat público. Opciones:
   ```bash
   base64 -i serviceAccount.json | tr -d '\n'
   ```
+
   y pegar el resultado como valor de `FIREBASE_SERVICE_ACCOUNT` en `.env.local`.
 - **`OPENAI_API_KEY`**: compartir por un canal seguro (gestor de contraseñas del equipo), o que el
   responsable de la Fase C la cargue solo en Vercel. Siempre con **límite de gasto** en el panel.
