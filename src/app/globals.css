@@ -22,8 +22,9 @@ input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var
 .top { position: sticky; top: 0; z-index: 5; display: flex; gap: 12px; align-items: end; justify-content: space-between;
   padding: 10px 16px; background: var(--bg); border-bottom: 1px solid var(--line); }
 .top .loc { flex: 1; min-width: 0; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
-.top .loc select { margin-top: 2px; padding: 6px 8px; font-size: 15px; text-transform: none; letter-spacing: 0; color: var(--ink); }
-.top nav { display: flex; gap: 12px; align-items: center; font-size: 14px; white-space: nowrap; }
+.top .loc select { margin-top: 2px; padding: 6px 8px; font-size: 16px; /* <16px hace zoom en iOS */ text-transform: none; letter-spacing: 0; color: var(--ink); }
+.top nav { display: flex; gap: 4px; align-items: center; font-size: 14px; white-space: nowrap; }
+.top nav a, .top nav .link { display: inline-block; padding: 12px 8px; }
 .link { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; }
 
 .bottom { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; display: flex; justify-content: center;
@@ -94,12 +95,14 @@ input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var
 .img.placeholder { display: grid; place-items: center; font: italic 18px Georgia, serif; color: var(--muted);
   background: repeating-linear-gradient(135deg, var(--line), var(--line) 10px, var(--card) 10px, var(--card) 20px); }
 .ai-stamp { position: absolute; left: 0; right: 0; bottom: 0; padding: 6px 10px; font-size: 11px; font-weight: 700; color: #fff; background: rgba(0, 0, 0, .78); }
+.ai-stamp.archive { right: auto; border-top-right-radius: 8px; font-weight: 600; background: rgba(0, 0, 0, .6); }
 
 /* Lectura */
 .article { padding: 12px 16px 24px; }
 .back { display: inline-block; margin-bottom: 8px; font-size: 14px; color: var(--muted); text-decoration: none; }
 .article h1 { font-size: 30px; margin: 8px 0 4px; }
 .article figure { margin: 12px -16px; } .article figcaption { padding: 4px 16px; font-size: 12px; color: var(--muted); }
+.article figcaption details { margin-top: 4px; } .article figcaption details p { margin: 4px 0 0; }
 .article section { margin-top: 16px; }
 .article .summary { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
 .article .summary p { margin: 0; font-size: 17px; }
@@ -122,3 +125,23 @@ input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
 .stats div { display: grid; } .stats b { font-size: 20px; } .stats span { font-size: 12px; color: var(--muted); }
 progress { width: 100%; accent-color: var(--accent); }
+
+/* Etiquetas y avisos pequenos */
+.tag { display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: 6px; font-size: 11px; font-weight: 700; background: var(--warn-bg); color: var(--warn); }
+.warn-text { color: var(--warn); }
+
+/* Admin: fuentes e imagen */
+.source.invalid input[inputmode="url"] { border-color: var(--accent); }
+.img-preview { display: grid; gap: 8px; }
+.img-preview .img { border-radius: 10px; aspect-ratio: 16 / 10; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.tabs button { border: 1px solid var(--line); background: var(--card); border-radius: 99px; padding: 10px 14px; font-size: 14px; cursor: pointer; }
+.tabs button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.picker { display: grid; gap: 8px; }
+.inline { display: flex; gap: 8px; } .inline input { flex: 1; min-width: 0; }
+.thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+.thumbs button { position: relative; padding: 0; border: 2px solid transparent; border-radius: 10px; overflow: hidden; background: var(--line); cursor: pointer; aspect-ratio: 4 / 3; }
+.thumbs button.on { border-color: var(--accent); }
+.thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.thumbs span { position: absolute; left: 4px; bottom: 4px; padding: 1px 6px; border-radius: 6px; font-size: 10px; font-weight: 700; color: #fff; background: rgba(0, 0, 0, .65); }
+code { font-size: 12px; background: var(--line); padding: 1px 4px; border-radius: 4px; }

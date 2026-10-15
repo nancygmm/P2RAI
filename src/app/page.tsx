@@ -10,7 +10,7 @@ type Msg = { role: "user"; text: string } | { role: "bot"; res: ChatResponse } |
 
 const LABEL: Record<ChatResponse["generatedBy"], string> = {
   ia: "Resumen generado por IA a partir de noticias publicadas",
-  extractivo: "Resúmenes publicados, sin intervención de IA",
+  extractivo: "Resúmenes publicados por el editor (el modelo no redactó esta respuesta)",
   ninguno: "Sin resultados",
 };
 
@@ -26,7 +26,7 @@ export default function ChatPage() {
   const suggestions = [
     "¿Qué pasó hoy?",
     `¿Qué noticias hay cerca de mi zona?`,
-    "¿Qué pasa en Madrid?",
+    "¿Qué pasa en el mundo?",
     "Novedades sobre transporte",
   ];
 
@@ -77,8 +77,14 @@ export default function ChatPage() {
                     <p>{c.text}</p>
                     <div className="cite">
                       <VerificationBadge v={c.verification} />
-                      <Link href={`/noticia/${c.articleId}`}>Fuente: {c.title}</Link>
+                      <Link href={`/noticia/${c.articleId}`}>Noticia: {c.title}</Link>
                     </div>
+                    {c.sources?.length > 0 && (
+                      <div className="cite">
+                        <span>Fuentes: {c.sources.map((s) => `${s.name}${s.supports === "contradice" ? " (contradice)" : ""}`).join(", ")}</span>
+                      </div>
+                    )}
+                    {c.contradictory && <div className="cite warn-text">Las fuentes de esta noticia se contradicen: no está confirmada.</div>}
                   </li>
                 ))}
               </ul>

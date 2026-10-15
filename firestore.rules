@@ -7,27 +7,65 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('role', '') == 'admin';
     }
 
+    // Imagen: una generada por la app (/api/images/...) siempre debe declararse como generada con IA.
+    function validImage(img) {
+      return img == null || (img is map && img.url is string && img.url.size() <= 2000
+        && img.origin in ['propia', 'licencia_libre', 'archivo', 'generada_ia', 'alterada_ia']
+        && (!img.url.matches('^/api/images/.*') || img.origin == 'generada_ia'));
+    }
+
+    // Forma minima de una noticia escrita desde el portal. Un documento mal formado tumbaria el feed.
+    function validArticle(d) {
+      return d.title is string && d.title.size() > 0 && d.title.size() <= 200
+        && d.summary is string && d.summary.size() <= 600
+        && d.body is string && d.body.size() <= 20000
+        && d.topics is list && d.topics.size() >= 1 && d.topics.size() <= 12
+        && d.scope in ['local', 'nacional', 'regional', 'internacional']
+        && d.places is list && d.places.size() <= 10
+        && d.sources is list && d.sources.size() >= 1 && d.sources.size() <= 10
+        && d.verification in ['confirmada', 'en_desarrollo']
+        && d.publishedAt is number
+        && (!('image' in d) || validImage(d.image));
+    }
+
     // Noticias: cualquier usuario autenticado lee; solo admin escribe.
     match /articles/{id} {
       allow read: if signedIn();
-      allow write: if isAdmin();
+      allow create, update: if isAdmin() && validArticle(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Campos que el cliente puede escribir en su perfil, con tipo y tamano acotados.
+    function validProfileFields(d) {
+      return (!('locationId' in d) || (d.locationId is string && d.locationId.size() <= 40))
+        && (!('topicAffinity' in d) || (d.topicAffinity is map && d.topicAffinity.size() <= 40));
     }
 
     // Perfil: cada quien el suyo. Nadie puede asignarse ni cambiar su propio rol
     // (el rol admin se pone a mano en la consola de Firebase).
     match /users/{uid} {
       allow read: if signedIn() && request.auth.uid == uid;
-      allow create: if signedIn() && request.auth.uid == uid && !('role' in request.resource.data);
-      allow update: if signedIn() && request.auth.uid == uid &&
-        request.resource.data.get('role', null) == resource.data.get('role', null);
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['locationId', 'topicAffinity'])
+        && validProfileFields(request.resource.data);
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['locationId', 'topicAffinity'])
+        && validProfileFields(request.resource.data);
     }
 
-    // Senales de comportamiento: solo crear las propias.
-    match /events/{id} {
-      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+    // Senales de comportamiento: solo las propias, con forma fija y un documento por usuario y
+    // noticia (id = uid_articleId), asi la coleccion no crece sin limite.
+    match /events/{eventId} {
+      allow create, update: if signedIn()
+        && eventId == request.auth.uid + '_' + request.resource.data.articleId
+        && request.resource.data.keys().hasOnly(['uid', 'articleId', 'type', 'ts'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.type == 'abrir'
+        && request.resource.data.articleId is string && request.resource.data.articleId.size() <= 128
+        && request.resource.data.ts is number;
     }
 
-    // aiUsage, meta/budget y chatLimits: solo el servidor (Admin SDK). Todo lo demas, denegado.
+    // aiUsage, meta/budget, chatLimits e images: solo el servidor (Admin SDK). Todo lo demas, denegado.
     match /{document=**} {
       allow read, write: if false;
     }

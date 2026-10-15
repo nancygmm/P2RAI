@@ -30,18 +30,24 @@ npm run build      # compilación de producción
 > Variables de entorno, claves necesarias y cómo replicar el entorno (en Vercel y en local):
 > ver [docs/configuracion.md](docs/configuracion.md).
 
-La configuración completa consta de siete pasos:
+La configuración completa consta de ocho pasos:
 
 1. **Firebase.** El proyecto requiere Authentication con el proveedor Google y Firestore.
 2. **Variables de cliente.** `.env.example` se copia a `.env.local` y se completan las variables `NEXT_PUBLIC_FIREBASE_*`.
 3. **Cuenta de servicio.** La clave se genera en Configuración del proyecto → Cuentas de servicio. El JSON va en una
    sola línea en `FIREBASE_SERVICE_ACCOUNT` y nunca se sube al repositorio.
-4. **Reglas.** `firestore.rules` se publica desde la consola o con `firebase deploy --only firestore:rules`.
-5. **Datos de ejemplo.** Se siembran con `node --env-file=.env.local scripts/seed.mjs`.
+4. **Reglas.** `firestore.rules` se publica desde la consola (Firestore → Reglas → pegar y Publicar) o con
+   `firebase deploy --only firestore:rules`. Hay que volver a publicarlas cada vez que cambia el archivo.
+5. **Datos de ejemplo.** Se siembran con `npm run seed` (lee `.env.local`). Conviene re-sembrar el día de la demo:
+   las fechas se calculan al sembrar.
 6. **Administrador.** Tras el primer inicio de sesión, el rol se asigna en la consola de Firestore agregando
    `role: "admin"` al documento `users/{uid}`. Las reglas impiden que una cuenta se asigne el rol desde la aplicación.
-7. **OpenAI.** La llave va en `OPENAI_API_KEY`. `OPENAI_MODEL`, `AI_PRICE_IN` y `AI_PRICE_OUT` deben coincidir con el
-   panel de OpenAI, y `AI_MOCK=0` activa las llamadas reales. Conviene fijar además un límite de gasto en ese panel.
+7. **Chat con IA (Anthropic).** La llave va en `ANTHROPIC_API_KEY`. `ANTHROPIC_MODEL`, `AI_PRICE_IN` y `AI_PRICE_OUT`
+   deben coincidir con el modelo (por defecto `claude-haiku-4-5`, USD 1 / 5 por millón de tokens) y `AI_MOCK=0` activa
+   las llamadas reales. Conviene fijar además un límite de gasto en la consola de Anthropic.
+8. **Imágenes con IA (opcional, OpenRouter).** Con `OPENROUTER_API_KEY` el portal puede generar ilustraciones
+   (`openai/gpt-image-1-mini`, ≈ USD 0.005 por imagen, descontado del mismo presupuesto). Sin esa llave el portal sigue
+   ofreciendo la búsqueda de imágenes con licencia (Openverse, gratis).
 
 ## Login en iPhone y PWA instalada
 
@@ -53,7 +59,7 @@ Al desplegar, el dominio final debe figurar en dos lugares:
 - Firebase → Authentication → Settings → Dominios autorizados.
 - Google Cloud → Credenciales → cliente OAuth web → URI de redirección: `https://<dominio>/__/auth/handler`.
 
-Este flujo aún no se ha probado en dispositivos reales.
+Probado en escritorio e iPhone (PWA instalada). Android pendiente de verificar.
 
 ## Dónde está cada decisión de Responsible AI
 
@@ -62,9 +68,10 @@ Este flujo aún no se ha probado en dispositivos reales.
 | Orden y prominencia del feed, cupos contra la burbuja | `src/lib/relevance.ts` |
 | Regla de validación de fuentes | `src/lib/validation.ts` |
 | Recuperación para el chat (sin IA) | `src/lib/retrieval.ts` |
-| Chat: citas validadas, incertidumbre, "no sé" | `src/app/api/chat/route.ts` |
+| Chat: citas validadas, fuentes, incertidumbre, "no sé" | `src/app/api/chat/route.ts` |
+| Imagen faltante: búsqueda con licencia y generación etiquetada | `src/lib/images.ts`, `src/app/admin/page.tsx` |
 | Tope de gasto, registro de costos, único acceso a la IA | `src/lib/ai.ts` |
-| Etiquetas de verificación e insignia de imagen generada | `src/components/Badges.tsx` |
+| Etiquetas de verificación y sellos de imagen (IA, alterada, de archivo) | `src/components/Badges.tsx` |
 | Permisos | `firestore.rules` |
 
 ## Qué incluye la base

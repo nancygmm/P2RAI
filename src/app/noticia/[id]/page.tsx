@@ -2,8 +2,8 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
-import { ArticleImage, VerificationBadge, imageCaption, timeAgo } from "@/components/Badges";
-import { validateSources } from "@/lib/validation";
+import { ArticleImage, VerificationBadge, imageCaption, isAiImage, timeAgo } from "@/components/Badges";
+import { hasContradiction, parseSourceUrl, registrableDomain } from "@/lib/validation";
 import { useStore } from "@/lib/store";
 
 const TYPE = { primaria: "Fuente primaria", oficial: "Fuente oficial", medio: "Medio" } as const;
@@ -19,7 +19,12 @@ export default function ArticlePage() {
   if (!ready) return <main className="center">Cargando…</main>;
   if (!a) return <main className="center">No se encontró la noticia. <Link href="/feed">Volver</Link></main>;
 
-  const contradictory = validateSources(a.sources).contradictory;
+  const contradictory = hasContradiction(a.sources);
+  // Motivo para el lector cuando no hay contradiccion: una sola fuente, o varias del mismo medio.
+  const outlets = new Set(a.sources.map((s) => { const u = parseSourceUrl(s.url); return u ? registrableDomain(u.hostname) : s.url; }));
+  const pendingReason = a.sources.length > 1 && outlets.size === 1
+    ? "Las fuentes son del mismo medio y aún no hay confirmación independiente."
+    : "Solo hay una fuente y aún no está confirmada de forma independiente.";
   const caption = imageCaption(a);
 
   return (
@@ -31,12 +36,31 @@ export default function ArticlePage() {
       {a.verification === "en_desarrollo" && (
         <div className="callout warn">
           <b>Noticia en desarrollo.</b>{" "}
-          {contradictory ? "Las fuentes disponibles se contradicen; abajo están ambas versiones." : "Solo hay una fuente y aún no está confirmada de forma independiente."}{" "}
+          {contradictory ? "Las fuentes disponibles se contradicen; abajo están las que confirman y las que contradicen." : pendingReason}{" "}
           Puede cambiar.
         </div>
       )}
 
-      {a.image?.url && <figure><ArticleImage a={a} />{caption && <figcaption>{caption}</figcaption>}</figure>}
+      {a.image?.url && (
+        <figure>
+          <ArticleImage a={a} />
+          {caption && (
+            <figcaption>
+              {caption}
+              {a.image.licenseUrl && parseSourceUrl(a.image.licenseUrl) && <> · <a href={a.image.licenseUrl} target="_blank" rel="noopener noreferrer license">licencia</a></>}
+              {a.image.sourceUrl && parseSourceUrl(a.image.sourceUrl) && <> · <a href={a.image.sourceUrl} target="_blank" rel="noopener noreferrer">ver original</a></>}
+              {isAiImage(a.image.origin) && (a.image.model || a.image.prompt) && (
+                <details>
+                  <summary>¿Cómo se generó?</summary>
+                  {a.image.model && <p>Modelo: {a.image.model}</p>}
+                  {a.image.prompt && <p>Descripción usada: “{a.image.prompt}”</p>}
+                  <p>Es una ilustración: no documenta lo ocurrido.</p>
+                </details>
+              )}
+            </figcaption>
+          )}
+        </figure>
+      )}
 
       <section className="summary">
         <div className="gen">{a.summaryOrigin === "ia" ? "Resumen generado por IA y revisado por el editor" : "Resumen escrito por el editor"}</div>
@@ -53,7 +77,7 @@ export default function ArticlePage() {
         <ul>
           {a.sources.map((s, i) => (
             <li key={i}>
-              <a href={s.url} target="_blank" rel="noreferrer">{s.name}</a>
+              {parseSourceUrl(s.url) ? <a href={s.url} target="_blank" rel="noopener noreferrer">{s.name}</a> : <b>{s.name}</b>}
               <span>{TYPE[s.type]} · {s.supports === "confirma" ? "confirma" : "contradice"}</span>
             </li>
           ))}

@@ -1,8 +1,9 @@
 "use client";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   addDoc, collection, doc, increment, limit, onSnapshot, orderBy, query, setDoc,
 } from "firebase/firestore";
+import { toArticle } from "./article";
 import { IS_DEMO, fbDb } from "./firebase";
 import { DEFAULT_LOCATION_ID, getLocation } from "./locations";
 import { seedArticles } from "./seed";
@@ -48,7 +49,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!user) { setReady(false); return; }
     if (IS_DEMO) {
-      const local = read<Article[]>(K.arts, []);
+      const stored = read<unknown>(K.arts, []);
+      const local = (Array.isArray(stored) ? stored : [])
+        .map((a, i) => toArticle((a as { id?: string })?.id ?? `local-${i}`, a))
+        .filter((a): a is Article => a !== null);
       setDemoArticles(local);
       setArticles([...local, ...seedArticles()]);
       setLocationId(read(K.loc, DEFAULT_LOCATION_ID));
@@ -60,7 +64,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     const db = fbDb();
     const unsubA = onSnapshot(
       query(collection(db, "articles"), orderBy("publishedAt", "desc"), limit(100)),
-      (snap) => { setArticles(snap.docs.map((d) => ({ ...(d.data() as Omit<Article, "id">), id: d.id }))); setReady(true); },
+      // Un documento mal formado se descarta en vez de tumbar el feed de todos.
+      (snap) => { setArticles(snap.docs.map((d) => toArticle(d.id, d.data())).filter((a): a is Article => a !== null)); setReady(true); },
       (e) => { console.error(e); setReady(true); },
     );
     const unsubU = onSnapshot(doc(db, "users", user.uid), (snap) => {
@@ -78,7 +83,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     if (user) setDoc(doc(fbDb(), "users", user.uid), { locationId: id }, { merge: true }).catch(console.error);
   }, [user]);
 
+  // Una senal por noticia y sesion: evita duplicados (StrictMode, volver atras) que inflan la afinidad.
+  const opened = useRef(new Set<string>());
+  useEffect(() => { opened.current.clear(); }, [user]);
+
   const trackOpen = useCallback((a: Article) => {
+    if (opened.current.has(a.id)) return;
+    opened.current.add(a.id);
     if (IS_DEMO) {
       setAffinity((prev) => {
         const next = { ...prev };
@@ -90,9 +101,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }
     if (!user) return;
     const db = fbDb();
-    const topicAffinity = Object.fromEntries(a.topics.map((t) => [t, increment(1)]));
-    setDoc(doc(db, "users", user.uid), { topicAffinity }, { merge: true }).catch(console.error);
-    addDoc(collection(db, "events"), { uid: user.uid, articleId: a.id, type: "abrir", ts: Date.now() }).catch(console.error);
+    // Sin temas no se toca la afinidad: un merge con {} reemplazaria la acumulada por un mapa vacio.
+    if (a.topics.length > 0) {
+      const topicAffinity = Object.fromEntries(a.topics.map((t) => [t, increment(1)]));
+      setDoc(doc(db, "users", user.uid), { topicAffinity }, { merge: true }).catch(console.error);
+    }
+    // Un evento por usuario y noticia (id determinista): la coleccion no crece sin limite.
+    setDoc(doc(db, "events", `${user.uid}_${a.id}`), { uid: user.uid, articleId: a.id, type: "abrir", ts: Date.now() }).catch(console.error);
   }, [user]);
 
   const publish = useCallback(async (a: Omit<Article, "id">) => {

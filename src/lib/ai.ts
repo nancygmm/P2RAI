@@ -1,13 +1,14 @@
 import "server-only";
 import { FieldValue } from "firebase-admin/firestore";
 import { adminDb } from "./admin";
+import { envNumber } from "./env";
 
 const MODEL = process.env.ANTHROPIC_MODEL || "claude-haiku-4-5";
-const PRICE_IN = Number(process.env.AI_PRICE_IN ?? 1);
-const PRICE_OUT = Number(process.env.AI_PRICE_OUT ?? 5);
+const PRICE_IN = envNumber("AI_PRICE_IN", 1);
+const PRICE_OUT = envNumber("AI_PRICE_OUT", 5);
 
 export const BUDGET_TOTAL = 20;
-export const BUDGET_CAP = Number(process.env.AI_BUDGET_CAP_USD ?? 14);
+export const BUDGET_CAP = envNumber("AI_BUDGET_CAP_USD", 14);
 
 export function aiEnabled(): boolean {
   return !!process.env.ANTHROPIC_API_KEY && process.env.AI_MOCK !== "1";
@@ -16,6 +17,13 @@ export function aiEnabled(): boolean {
 export class BudgetExceededError extends Error {
   constructor() {
     super("Tope de presupuesto de IA alcanzado");
+  }
+}
+
+/** El modelo llego a max_tokens: el JSON quedo cortado (la llamada ya se cobro y se registro). */
+export class TruncatedError extends Error {
+  constructor() {
+    super("La respuesta del modelo se cortó por longitud");
   }
 }
 
@@ -39,28 +47,41 @@ export async function getBudget(): Promise<Budget> {
   }
 
   const snap = await db.doc("meta/budget").get();
+  const usd = Number(snap.get("usd") ?? 0);
 
   return {
-    usd: snap.get("usd") ?? 0,
+    usd: Number.isFinite(usd) ? usd : 0,
     calls: snap.get("calls") ?? 0,
     byFeature: snap.get("byFeature") ?? {},
   };
 }
 
-async function record(
-  feature: string,
-  uid: string,
-  tokensIn: number,
-  tokensOut: number
-) {
-  const usd = (tokensIn * PRICE_IN + tokensOut * PRICE_OUT) / 1_000_000;
+/** Lanza BudgetExceededError si el gasto registrado ya alcanzo el tope. */
+export async function assertBudget(): Promise<void> {
+  const budget = await getBudget();
+  if (budget.usd >= BUDGET_CAP) throw new BudgetExceededError();
+}
+
+export interface CostEntry {
+  feature: string;
+  uid: string;
+  provider: string;
+  model: string;
+  usd: number;
+  tokensIn?: number;
+  tokensOut?: number;
+}
+
+/** Registra un gasto de IA (chat, imagen...) en el historial y en el acumulado del presupuesto. */
+export async function recordCost(entry: CostEntry): Promise<number> {
+  const usd = Number.isFinite(entry.usd) && entry.usd > 0 ? entry.usd : 0;
   const db = adminDb();
 
   if (!db) {
     mem.usd += usd;
     mem.calls += 1;
 
-    const featureData = (mem.byFeature[feature] ??= {
+    const featureData = (mem.byFeature[entry.feature] ??= {
       usd: 0,
       calls: 0,
     });
@@ -74,12 +95,12 @@ async function record(
   const batch = db.batch();
 
   batch.set(db.collection("aiUsage").doc(), {
-    feature,
-    uid,
-    provider: "anthropic",
-    model: MODEL,
-    tokensIn,
-    tokensOut,
+    feature: entry.feature,
+    uid: entry.uid,
+    provider: entry.provider,
+    model: entry.model,
+    tokensIn: entry.tokensIn ?? 0,
+    tokensOut: entry.tokensOut ?? 0,
     usd,
     ts: Date.now(),
   });
@@ -90,7 +111,7 @@ async function record(
       usd: FieldValue.increment(usd),
       calls: FieldValue.increment(1),
       byFeature: {
-        [feature]: {
+        [entry.feature]: {
           usd: FieldValue.increment(usd),
           calls: FieldValue.increment(1),
         },
@@ -118,6 +139,7 @@ type ClaudeResponse = {
     type?: string;
     text?: string;
   }>;
+  stop_reason?: string;
   usage?: {
     input_tokens?: number;
     output_tokens?: number;
@@ -125,11 +147,7 @@ type ClaudeResponse = {
 };
 
 export async function generateJson<T>(call: JsonCall): Promise<T> {
-  const budget = await getBudget();
-
-  if (budget.usd >= BUDGET_CAP) {
-    throw new BudgetExceededError();
-  }
+  await assertBudget();
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   const workspaceId = process.env.ANTHROPIC_WORKSPACE_ID;
@@ -148,14 +166,10 @@ export async function generateJson<T>(call: JsonCall): Promise<T> {
     headers["anthropic-workspace-id"] = workspaceId;
   }
 
-  console.log("-- LLAMANDO A CLAUDE --");
-  console.log("Modelo:", MODEL);
-  console.log("Feature:", call.feature);
-  console.log("Workspace configurado:", !!workspaceId);
-
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers,
+    signal: AbortSignal.timeout(30_000),
     body: JSON.stringify({
       model: MODEL,
       max_tokens: call.maxOutputTokens ?? 300,
@@ -178,11 +192,9 @@ export async function generateJson<T>(call: JsonCall): Promise<T> {
   if (!res.ok) {
     const errorText = await res.text();
 
-    console.error("Error Anthropic:", res.status, errorText);
+    console.error("Error Anthropic:", res.status, errorText.slice(0, 300));
 
-    throw new Error(
-      `Anthropic ${res.status}: ${errorText.slice(0, 500)}`
-    );
+    throw new Error(`Anthropic ${res.status}`);
   }
 
   const data = (await res.json()) as ClaudeResponse;
@@ -190,11 +202,21 @@ export async function generateJson<T>(call: JsonCall): Promise<T> {
   const tokensIn = data.usage?.input_tokens ?? 0;
   const tokensOut = data.usage?.output_tokens ?? 0;
 
-  console.log("-- CLAUDE RESPONDIO --");
-  console.log("Input tokens:", tokensIn);
-  console.log("Output tokens:", tokensOut);
+  console.log(`IA ${call.feature}: ${MODEL} · ${tokensIn} in / ${tokensOut} out · stop=${data.stop_reason}`);
 
-  await record(call.feature, call.uid, tokensIn, tokensOut);
+  await recordCost({
+    feature: call.feature,
+    uid: call.uid,
+    provider: "anthropic",
+    model: MODEL,
+    tokensIn,
+    tokensOut,
+    usd: (tokensIn * PRICE_IN + tokensOut * PRICE_OUT) / 1_000_000,
+  });
+
+  if (data.stop_reason === "max_tokens") {
+    throw new TruncatedError();
+  }
 
   const text =
     data.content
@@ -209,7 +231,7 @@ export async function generateJson<T>(call: JsonCall): Promise<T> {
   try {
     return JSON.parse(text) as T;
   } catch {
-    console.error("Respuesta recibida:", text);
+    console.error("Claude devolvió JSON inválido (", text.length, "caracteres)");
     throw new Error("Claude devolvió JSON inválido");
   }
 }

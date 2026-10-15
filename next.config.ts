@@ -17,6 +17,24 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  // Cabeceras de seguridad. Se excluye /__/auth/*: lo sirve Firebase y su iframe debe poder
+  // cargarse dentro de la app. SAMEORIGIN (no DENY) por la misma razon.
+  async headers() {
+    return [
+      {
+        source: "/:path((?!__/auth).*)",
+        headers: [
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Content-Security-Policy", value: "frame-ancestors 'self'" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // La ubicacion es simulada: la app nunca pide el GPS.
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

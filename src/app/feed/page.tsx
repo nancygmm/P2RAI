@@ -20,7 +20,7 @@ export default function FeedPage() {
           <div className="body">
             <div className={`why ${reserved ? "reserved" : ""}`}>{reason}</div>
             <h2>{a.title}</h2>
-            {tier !== "compact" && <p>{a.summary}</p>}
+            {tier !== "compact" && <p>{a.summaryOrigin === "ia" && <span className="tag">Resumen IA</span>}{a.summary}</p>}
             <div className="meta">
               <VerificationBadge v={a.verification} />
               <span>{a.sources[0]?.name ?? "Sin fuente"}{a.sources.length > 1 ? ` +${a.sources.length - 1}` : ""}</span>

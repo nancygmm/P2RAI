@@ -21,7 +21,7 @@
   "sources": [
    {
     "name": "Municipalidad (ejemplo)",
-    "url": "https://muni-guatemala.example.com/nota",
+    "url": "https://muni-guatemala.example/nota",
     "type": "oficial",
     "supports": "confirma"
    }
@@ -51,13 +51,13 @@
   "sources": [
    {
     "name": "Diario Capital (ejemplo)",
-    "url": "https://diario-capital.example.com/nota",
+    "url": "https://diario-capital.example/nota",
     "type": "medio",
     "supports": "confirma"
    },
    {
     "name": "Radio Centro (ejemplo)",
-    "url": "https://radio-centro.example.com/nota",
+    "url": "https://radio-centro.example/nota",
     "type": "medio",
     "supports": "confirma"
    }
@@ -87,7 +87,7 @@
   "sources": [
    {
     "name": "Concejo Municipal de Antigua (ejemplo)",
-    "url": "https://muni-antigua.example.com/nota",
+    "url": "https://muni-antigua.example/nota",
     "type": "oficial",
     "supports": "confirma"
    }
@@ -116,7 +116,7 @@
   "sources": [
    {
     "name": "Noticias del Valle (ejemplo)",
-    "url": "https://noticias-valle.example.com/nota",
+    "url": "https://noticias-valle.example/nota",
     "type": "medio",
     "supports": "confirma"
    }
@@ -146,13 +146,13 @@
   "sources": [
    {
     "name": "Municipalidad de Quetzaltenango (ejemplo)",
-    "url": "https://muni-xela.example.com/nota",
+    "url": "https://muni-xela.example/nota",
     "type": "oficial",
     "supports": "confirma"
    },
    {
     "name": "El Altense (ejemplo)",
-    "url": "https://el-altense.example.com/nota",
+    "url": "https://el-altense.example/nota",
     "type": "medio",
     "supports": "confirma"
    }
@@ -182,7 +182,7 @@
   "sources": [
    {
     "name": "Comité del Festival (ejemplo)",
-    "url": "https://festival-orquideas.example.com/nota",
+    "url": "https://festival-orquideas.example/nota",
     "type": "primaria",
     "supports": "confirma"
    }
@@ -210,13 +210,13 @@
   "sources": [
    {
     "name": "Diario Oficial (ejemplo)",
-    "url": "https://diario-oficial.example.com/nota",
+    "url": "https://diario-oficial.example/nota",
     "type": "oficial",
     "supports": "confirma"
    },
    {
     "name": "Diario Capital (ejemplo)",
-    "url": "https://diario-capital.example.com/nota",
+    "url": "https://diario-capital.example/nota",
     "type": "medio",
     "supports": "confirma"
    }
@@ -243,13 +243,13 @@
   "sources": [
    {
     "name": "Portal Económico (ejemplo)",
-    "url": "https://portal-economico.example.com/nota",
+    "url": "https://portal-economico.example/nota",
     "type": "medio",
     "supports": "confirma"
    },
    {
     "name": "Ente regulador (ejemplo)",
-    "url": "https://regulador.example.com/nota",
+    "url": "https://regulador.example/nota",
     "type": "oficial",
     "supports": "contradice"
    }
@@ -276,7 +276,7 @@
   "sources": [
    {
     "name": "Ministerio de Salud (ejemplo)",
-    "url": "https://ministerio-salud.example.com/nota",
+    "url": "https://ministerio-salud.example/nota",
     "type": "oficial",
     "supports": "confirma"
    }
@@ -303,13 +303,13 @@
   "sources": [
    {
     "name": "Secretaría regional (ejemplo)",
-    "url": "https://secretaria-regional.example.com/nota",
+    "url": "https://secretaria-regional.example/nota",
     "type": "oficial",
     "supports": "confirma"
    },
    {
     "name": "Agencia Istmo (ejemplo)",
-    "url": "https://agencia-istmo.example.com/nota",
+    "url": "https://agencia-istmo.example/nota",
     "type": "medio",
     "supports": "confirma"
    }
@@ -339,7 +339,7 @@
   "sources": [
    {
     "name": "Alcaldía de San Salvador (ejemplo)",
-    "url": "https://alcaldia-ss.example.com/nota",
+    "url": "https://alcaldia-ss.example/nota",
     "type": "oficial",
     "supports": "confirma"
    }
@@ -369,13 +369,13 @@
   "sources": [
    {
     "name": "Protección Civil (ejemplo)",
-    "url": "https://proteccion-civil.example.com/nota",
+    "url": "https://proteccion-civil.example/nota",
     "type": "oficial",
     "supports": "confirma"
    },
    {
     "name": "Canal Metropolitano (ejemplo)",
-    "url": "https://canal-metro.example.com/nota",
+    "url": "https://canal-metro.example/nota",
     "type": "medio",
     "supports": "confirma"
    }
@@ -398,13 +398,13 @@
   "sources": [
    {
     "name": "Secretaría de la cumbre (ejemplo)",
-    "url": "https://cumbre-clima.example.com/nota",
+    "url": "https://cumbre-clima.example/nota",
     "type": "primaria",
     "supports": "confirma"
    },
    {
     "name": "Agencia Mundial (ejemplo)",
-    "url": "https://agencia-mundial.example.com/nota",
+    "url": "https://agencia-mundial.example/nota",
     "type": "medio",
     "supports": "confirma"
    }
@@ -434,7 +434,7 @@
   "sources": [
    {
     "name": "Ayuntamiento de Madrid (ejemplo)",
-    "url": "https://ayto-madrid.example.com/nota",
+    "url": "https://ayto-madrid.example/nota",
     "type": "oficial",
     "supports": "confirma"
    }
@@ -457,7 +457,7 @@
   "sources": [
    {
     "name": "Agencia Mundial (ejemplo)",
-    "url": "https://agencia-mundial.example.com/nota",
+    "url": "https://agencia-mundial.example/nota",
     "type": "medio",
     "supports": "confirma"
    }
@@ -486,7 +486,7 @@
   "sources": [
    {
     "name": "Empresa operadora (ejemplo)",
-    "url": "https://operadora-bogota.example.com/nota",
+    "url": "https://operadora-bogota.example/nota",
     "type": "primaria",
     "supports": "confirma"
    }

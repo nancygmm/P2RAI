@@ -57,10 +57,15 @@ export function reachScore(a: Article, geo: number): number {
   return Math.min(1, base + (Math.min(confirming, 3) / 3) * 0.2);
 }
 
+/**
+ * Grupo para los cupos anti-burbuja. "Internacional" exige ambito internacional: una nota
+ * local de otro pais (p. ej. horarios de buses en Bogota) no cuenta como noticia del mundo
+ * que una persona deberia conocer.
+ */
 export function bucketOf(a: Article, geo: number): Bucket | null {
+  if (a.scope === "internacional") return "internacional";
   if (geo >= 0.8) return "local";
   if (a.scope === "nacional" && geo >= 0.45) return "nacional";
-  if (a.scope === "internacional" || geo < 0.3) return "internacional";
   return null;
 }
 
@@ -77,6 +82,9 @@ function reasonFor(a: Article, loc: SimLocation, parts: Ranked["parts"], affinit
   if (parts.geo >= 0.45) return `En tu país: ${loc.country}`;
   if (a.scope === "internacional") return "Noticia internacional";
   if (parts.geo >= 0.3) return `En tu región: ${loc.region}`;
+  const where = a.places.find((p) => p.country || p.region);
+  if (where?.country) return `Fuera de tu país: ${where.city ? `${where.city}, ` : ""}${where.country}`;
+  if (where?.region) return `Otra región: ${where.region}`;
   return "Reciente";
 }
 
@@ -95,6 +103,13 @@ export function rankFeed(articles: Article[], loc: SimLocation, affinity: Affini
     return { article, score, parts, bucket: bucketOf(article, geo), reservedAs: null as Bucket | null };
   });
   scored.sort((x, y) => y.score - x.score || y.article.publishedAt - x.article.publishedAt);
+
+  // La portada no puede ser una noticia sin confirmar. Va antes de los cupos: si fuera despues,
+  // subir la portada desplazaria hacia abajo (y fuera del top) a un reservado.
+  if (scored.length && scored[0].article.verification !== "confirmada") {
+    const i = scored.findIndex((s) => s.article.verification === "confirmada");
+    if (i > 0) scored.unshift(...scored.splice(i, 1));
+  }
 
   // Garantia contra la burbuja: en los primeros TOP_N debe haber al menos una
   // noticia local, una nacional y una internacional (si existen).
@@ -118,18 +133,13 @@ export function rankFeed(articles: Article[], loc: SimLocation, affinity: Affini
     scored.splice(n, 0, demoted);
   }
 
-  // La portada no puede ser una noticia sin confirmar.
-  if (scored.length && scored[0].article.verification !== "confirmada") {
-    const i = scored.findIndex((s) => s.article.verification === "confirmada");
-    if (i > 0) scored.unshift(...scored.splice(i, 1));
-  }
-
   return scored.map((s, i) => ({
     article: s.article,
     score: s.score,
     parts: s.parts,
     reserved: !!s.reservedAs,
-    tier: i === 0 && s.article.verification === "confirmada" ? "hero" : i <= 2 ? "medium" : "compact",
+    // Un reservado nunca queda como linea de texto: el cupo garantiza presencia y prominencia.
+    tier: i === 0 && s.article.verification === "confirmada" ? "hero" : i <= 2 || s.reservedAs ? "medium" : "compact",
     reason: reasonFor(s.article, loc, s.parts, affinity, s.reservedAs),
   }));
 }
