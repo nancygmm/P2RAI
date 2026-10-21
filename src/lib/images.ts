@@ -1,5 +1,6 @@
 import "server-only";
 import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import sharp from "sharp";
 import { adminDb } from "./admin";
 import { assertBudget, recordCost } from "./ai";
 import { envNumber } from "./env";
@@ -103,8 +104,34 @@ const BYPASS = /(fotorrealis|foto ?realista|photorealis|realistic photo|fotograf
 
 export class ImageGenError extends Error {}
 
-// Formatos que se sirven desde el propio dominio. SVG queda fuera: puede llevar scripts.
-const RASTER = new Set(["image/webp", "image/png", "image/jpeg"]);
+// Formatos de entrada aceptados. SVG queda fuera: puede llevar scripts.
+const RASTER = new Set(["png", "jpeg", "webp"]);
+/** Firestore admite documentos de hasta 1 MiB; la imagen se guarda como bytes. */
+const MAX_BYTES = 900_000;
+
+/**
+ * El proveedor no siempre respeta formato y calidad (puede devolver un PNG de varios MB).
+ * Se normaliza aqui: maximo 1280 px y WebP comprimido, que ademas pesa menos para el feed.
+ */
+async function compress(raw: Buffer): Promise<Buffer> {
+  let meta;
+  try {
+    meta = await sharp(raw).metadata();
+  } catch {
+    throw new ImageGenError("El proveedor devolvió un archivo que no es una imagen válida.");
+  }
+  if (!meta.format || !RASTER.has(meta.format)) {
+    throw new ImageGenError(`El proveedor devolvió un formato no admitido (${meta.format ?? "desconocido"}).`);
+  }
+  for (const [width, quality] of [[1280, 75], [1024, 60], [800, 50]] as const) {
+    const out = await sharp(raw)
+      .resize({ width, height: width, fit: "inside", withoutEnlargement: true })
+      .webp({ quality })
+      .toBuffer();
+    if (out.length <= MAX_BYTES) return out;
+  }
+  throw new ImageGenError("La imagen generada es demasiado grande para guardarla. Intenta de nuevo.");
+}
 
 // Imagenes generadas en modo demo (sin Firestore): solo en memoria.
 const memImages = new Map<string, { data: Buffer; contentType: string }>();
@@ -168,11 +195,13 @@ export async function generateIllustration(userPrompt: string, uid: string): Pro
   const first = data.data?.[0];
   const b64 = first?.b64_json?.replace(/^data:[^,]*,/, "");
   if (!b64) throw new ImageGenError("El proveedor no devolvió ninguna imagen.");
-  const contentType = first?.media_type || "image/webp";
-  if (!RASTER.has(contentType)) throw new ImageGenError(`El proveedor devolvió un formato no admitido (${contentType}).`);
-  const bytes = Buffer.from(b64, "base64");
-  // Firestore admite documentos de hasta 1 MiB; la imagen se guarda como bytes.
-  if (bytes.length > 900_000) throw new ImageGenError("La imagen generada es demasiado grande para guardarla. Intenta de nuevo.");
+  if (first?.media_type && /svg/i.test(first.media_type)) {
+    throw new ImageGenError(`El proveedor devolvió un formato no admitido (${first.media_type}).`);
+  }
+  const raw = Buffer.from(b64, "base64");
+  const bytes = await compress(raw);
+  const contentType = "image/webp";
+  console.log(`Imagen ${IMAGE_MODEL}: ${first?.media_type ?? "?"} ${raw.length} B -> webp ${bytes.length} B · USD ${usd}`);
 
   const db = adminDb();
   let id: string;
