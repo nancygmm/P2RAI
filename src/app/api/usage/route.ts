@@ -9,11 +9,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "Demasiadas solicitudes" }, { status: 429 });
   }
   const caller = await getCaller(req);
-  if (!caller) return NextResponse.json({ error: "Inicia sesión" }, { status: 401 });
-  // Sin rol admin: solo si se pueden generar ilustraciones (sin cifras de gasto).
-  if (!caller.isAdmin) {
-    return NextResponse.json({ imageGen: { enabled: imageGenStatus() === "ok", status: imageGenStatus(), model: imageModel() } });
-  }
+  if (!caller?.isAdmin) return NextResponse.json({ error: "Solo administradores" }, { status: 403 });
   const b = await getBudget();
   return NextResponse.json({
     spent: b.usd, calls: b.calls, byFeature: b.byFeature,

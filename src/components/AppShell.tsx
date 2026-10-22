@@ -18,7 +18,7 @@ function PinIcon() {
 }
 
 function Header() {
-  const { location, setLocation } = useStore();
+  const { location, setLocation, isAdmin } = useStore();
   const { signOut, demo } = useAuth();
   const [compact, setCompact] = useState(false);
 
@@ -58,13 +58,14 @@ function Header() {
         </label>
         <nav className="top-actions">
           {demo && <span className="badge shell-demo">demo</span>}
-          {/* Cualquier usuario con sesion puede publicar noticias. */}
-          <Link href="/publicar" className="shell-act" aria-label="Publicar noticia">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M12 5v14M5 12h14" />
-            </svg>
-            <span>Publicar</span>
-          </Link>
+          {isAdmin && (
+            <Link href="/admin" className="shell-act">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6z" />
+              </svg>
+              <span>Admin</span>
+            </Link>
+          )}
           <button className="link shell-act" onClick={signOut}>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9" />
@@ -114,7 +115,7 @@ function Gate({ children }: { children: React.ReactNode }) {
     );
   }
   if (!user) return <Login />;
-  const admin = path.startsWith("/publicar") || path.startsWith("/admin");
+  const admin = path.startsWith("/admin");
   return (
     <StoreProvider>
       <div className={admin ? "shell wide" : "shell"}>
