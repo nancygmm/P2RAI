@@ -1,7 +1,7 @@
 # P2RAI · AI Assisted News App
 
 Proyecto 2 del curso Responsible AI: una PWA de noticias personalizadas con portal administrativo.
-Un solo proyecto Next.js sirve la aplicación móvil (`/`, `/feed`, `/noticia/[id]`) y el portal (`/admin`).
+Un solo proyecto Next.js sirve la aplicación móvil (`/`, `/feed`, `/noticia/[id]`) y el portal para publicar (`/publicar`, abierto a cualquier usuario con sesión).
 
 Lo que falta por hacer está en [PENDIENTES.md](PENDIENTES.md).
 
@@ -42,6 +42,8 @@ La configuración completa consta de ocho pasos:
    las fechas se calculan al sembrar.
 6. **Administrador.** Tras el primer inicio de sesión, el rol se asigna en la consola de Firestore agregando
    `role: "admin"` al documento `users/{uid}`. Las reglas impiden que una cuenta se asigne el rol desde la aplicación.
+   Cualquier usuario con sesión puede publicar noticias; también pueden generar ilustraciones con IA (sin ver
+   costos). El rol admin solo hace falta para ver el gasto de IA y para editar o borrar noticias.
 7. **Chat con IA (Anthropic).** La llave va en `ANTHROPIC_API_KEY`. `ANTHROPIC_MODEL`, `AI_PRICE_IN` y `AI_PRICE_OUT`
    deben coincidir con el modelo (por defecto `claude-haiku-4-5`, USD 1 / 5 por millón de tokens) y `AI_MOCK=0` activa
    las llamadas reales. Conviene fijar además un límite de gasto en la consola de Anthropic.
@@ -69,7 +71,7 @@ Probado en escritorio e iPhone (PWA instalada). Android pendiente de verificar.
 | Regla de validación de fuentes | `src/lib/validation.ts` |
 | Recuperación para el chat (sin IA) | `src/lib/retrieval.ts` |
 | Chat: citas validadas, fuentes, incertidumbre, "no sé" | `src/app/api/chat/route.ts` |
-| Imagen faltante: búsqueda con licencia y generación etiquetada | `src/lib/images.ts`, `src/app/admin/page.tsx` |
+| Imagen faltante: búsqueda con licencia y generación etiquetada | `src/lib/images.ts`, `src/app/publicar/page.tsx` |
 | Tope de gasto, registro de costos, único acceso a la IA | `src/lib/ai.ts` |
 | Etiquetas de verificación y sellos de imagen (IA, alterada, de archivo) | `src/components/Badges.tsx` |
 | Permisos | `firestore.rules` |

@@ -1,0 +1,171 @@
+/* Portal admin. Dueño: agente admin. Todos los selectores van bajo .admin. */
+
+.admin {
+  position: relative; isolation: isolate; width: 100%; min-width: 0;
+  display: grid; gap: 22px; padding: 8px var(--gutter) 40px;
+}
+
+/* ---------- Cabecera editorial ---------- */
+.admin .admin-head { position: relative; display: grid; gap: 10px; padding: 12px 0 4px; }
+.admin .admin-head::after {
+  content: ""; position: absolute; z-index: -1; right: -8%; top: -48%;
+  width: min(440px, 90vw); aspect-ratio: 1; pointer-events: none;
+  background: radial-gradient(closest-side, var(--accent-soft), transparent 72%);
+}
+.admin .admin-kicker { font-family: var(--font-ui); font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+.admin h1 { font-size: clamp(38px, 7vw, 58px); letter-spacing: -.03em; line-height: 1; }
+.admin .admin-sub { margin: 0; max-width: 56ch; font-size: 16px; color: var(--muted); }
+
+/* ---------- Paneles (tarjetas elevadas) ---------- */
+.admin .panel {
+  --pad: clamp(18px, 3vw, 28px);
+  position: relative; min-width: 0; display: grid; gap: 16px;
+  padding: var(--pad);
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r-lg); box-shadow: var(--shadow-2);
+}
+.admin .panel::before {
+  content: ""; position: absolute; top: 0; left: 24px; right: 24px; height: 1px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: .55;
+}
+.admin .panel h2 { font-size: clamp(24px, 3.4vw, 30px); }
+.admin .sec-n {
+  display: block; margin-bottom: 8px;
+  font-family: var(--font-ui); font-size: 12px; font-weight: 600; line-height: 1; letter-spacing: .14em;
+  color: var(--accent); font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Gasto de IA: KPI y barra ---------- */
+.admin .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 10px; }
+.admin .stats > div {
+  display: grid; gap: 4px; align-content: start; min-width: 0; padding: 14px 16px;
+  background: var(--card-2); border: 1px solid var(--line); border-radius: var(--r-md);
+}
+.admin .stats b {
+  font-family: var(--font-display); font-size: clamp(18px, 4.6vw, 26px); font-weight: 600; line-height: 1.1;
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.admin .stats > div:first-child b {
+  background: var(--grad-accent); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.admin .stats span { font-size: 12px; color: var(--muted); }
+
+.admin progress {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 10px; margin: 4px 0 2px;
+  border: 0; border-radius: var(--r-pill); background: var(--line); overflow: hidden;
+}
+.admin progress::-webkit-progress-bar { background: var(--line); border-radius: var(--r-pill); }
+.admin progress::-webkit-progress-value {
+  background: var(--grad-accent); border-radius: var(--r-pill); box-shadow: 0 0 14px -2px var(--accent);
+}
+.admin progress::-moz-progress-bar { background: var(--grad-accent); border-radius: var(--r-pill); }
+
+/* ---------- Formulario ---------- */
+.admin input, .admin select, .admin textarea { font-size: 16px; } /* >=16px: sin zoom en iOS */
+.admin .panel label {
+  display: grid; gap: 6px; min-width: 0;
+  font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+}
+.admin .panel label > :is(input, select, textarea) {
+  font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--ink);
+}
+.admin .panel textarea { resize: vertical; min-height: 88px; line-height: 1.5; }
+
+.admin .panel fieldset {
+  display: grid; gap: 12px; min-width: 0; margin: 0; padding: 16px;
+  background: var(--card-2); border: 1px solid var(--line); border-radius: var(--r-md);
+}
+.admin .panel legend {
+  padding: 0 6px; margin-left: -6px;
+  font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
+}
+.admin .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+.admin .link { padding: 6px 2px; justify-self: start; }
+
+/* Fuentes: tarjetas en relieve sutil; URL no valida resaltada en acento */
+.admin .source {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; align-items: center;
+  min-width: 0; padding: 12px;
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--r-md);
+}
+.admin .source.invalid { background: var(--accent-soft); border-color: var(--accent); }
+.admin .source.invalid input[inputmode="url"] { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+
+/* Estado de verificacion: color y franja lateral */
+.admin .callout {
+  margin: 0; padding: 14px 16px 14px 18px; line-height: 1.5;
+  box-shadow: inset 4px 0 0 currentColor;
+  border: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+}
+.admin .callout.ok { background: var(--ok-bg); }
+.admin .callout.warn { background: var(--warn-bg); }
+.admin .callout small { display: block; margin-top: 6px; font-size: 12px; opacity: .85; }
+
+/* Segmented control para buscar / generar / url */
+.admin .tabs {
+  display: flex; flex-wrap: wrap; gap: 4px; padding: 4px;
+  background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r-pill);
+}
+.admin .tabs button {
+  flex: 1 1 auto; border: 0; background: transparent; border-radius: var(--r-pill);
+  padding: 10px 14px; font-size: 14px; font-weight: 500; color: var(--muted); white-space: nowrap; cursor: pointer;
+}
+.admin .tabs button:hover { color: var(--ink); }
+.admin .tabs button.on { background: var(--ink); color: var(--bg); font-weight: 600; box-shadow: var(--shadow-1); }
+
+.admin .picker { display: grid; gap: 10px; min-width: 0; }
+.admin .inline { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin .inline input { flex: 1 1 200px; min-width: 0; }
+.admin .inline .btn { flex: 0 0 auto; }
+
+/* Miniaturas: elevacion 3D al pasar el puntero y anillo de acento al seleccionar */
+.admin .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; perspective: 800px; }
+.admin .thumbs button {
+  position: relative; padding: 0; overflow: hidden; aspect-ratio: 4 / 3; cursor: pointer;
+  border: 2px solid transparent; border-radius: var(--r-md); background: var(--line); box-shadow: var(--shadow-1);
+  transition: transform .45s var(--ease-out);
+}
+.admin .thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s var(--ease-out); }
+.admin .thumbs span {
+  position: absolute; left: 6px; bottom: 6px; padding: 2px 7px; border-radius: 6px;
+  font-size: 10px; font-weight: 700; color: #fff; background: rgba(0, 0, 0, .66); pointer-events: none;
+}
+.admin .thumbs button.on {
+  border-color: var(--accent); outline: 2px solid var(--accent); outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--accent-soft), 0 14px 30px -10px var(--accent);
+}
+@media (hover: hover) {
+  .admin .thumbs button:hover { transform: translateY(-4px) rotateX(6deg); }
+  .admin .thumbs button:hover img { transform: scale(1.06); }
+}
+
+/* Vista previa de la imagen */
+.admin .img-preview { display: grid; gap: 10px; min-width: 0; }
+.admin .img-preview .img { border-radius: var(--r-md); aspect-ratio: 16 / 10; box-shadow: var(--shadow-2); }
+
+/* Barra de publicacion: en movil ocupa el ancho; en escritorio flota pegada al fondo */
+.admin .publish-bar {
+  --pad: clamp(18px, 3vw, 28px);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px;
+  margin: 8px calc(var(--pad) * -1) calc(var(--pad) * -1); padding: 14px var(--pad);
+  border-top: 1px solid var(--line); border-radius: 0 0 var(--r-lg) var(--r-lg);
+  background: var(--card);
+}
+.admin .publish-bar .btn { min-width: 180px; }
+.admin .publish-bar .hint { margin-right: auto; }
+@media (max-width: 719px) {
+  .admin .publish-bar .btn { width: 100%; }
+  .admin .publish-bar .hint { display: none; }
+}
+@media (min-width: 720px) {
+  .admin .publish-bar {
+    position: sticky; bottom: 12px; z-index: 3; margin: 8px 0 0;
+    padding: 10px 10px 10px 20px; border: 1px solid var(--line); border-radius: var(--r-pill);
+    background: color-mix(in srgb, var(--card) 84%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(1.3); backdrop-filter: blur(12px) saturate(1.3);
+    box-shadow: var(--shadow-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin .thumbs button:hover, .admin .thumbs button:hover img { transform: none; }
+}

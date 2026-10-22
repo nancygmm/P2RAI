@@ -1,6 +1,6 @@
 // Service worker minimo: guarda en cache la interfaz para abrir rapido y sin red.
 // NO guarda respuestas de /api (el chat siempre va al servidor) ni el login.
-const CACHE = "p2rai-v1";
+const CACHE = "p2rai-v2";
 
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => {

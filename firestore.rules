@@ -28,10 +28,23 @@ service cloud.firestore {
         && (!('image' in d) || validImage(d.image));
     }
 
-    // Noticias: cualquier usuario autenticado lee; solo admin escribe.
+    // Noticia nueva de un usuario sin rol: solo campos conocidos, firmada con su propio uid
+    // y sin fecha en el futuro (no puede fijarse arriba del feed).
+    function ownNewArticle(d) {
+      return d.keys().hasOnly(['title', 'summary', 'summaryOrigin', 'body', 'topics', 'scope', 'places',
+          'sources', 'verification', 'image', 'publishedAt', 'authorUid'])
+        && d.authorUid == request.auth.uid
+        && (!('summaryOrigin' in d) || d.summaryOrigin in ['humano', 'ia'])
+        && d.publishedAt <= request.time.toMillis() + 60000;
+    }
+
+    // Noticias: cualquier usuario autenticado lee y puede publicar (crear) noticias.
+    // Editar y borrar sigue siendo solo de admin.
     match /articles/{id} {
       allow read: if signedIn();
-      allow create, update: if isAdmin() && validArticle(request.resource.data);
+      allow create: if signedIn() && validArticle(request.resource.data)
+        && (isAdmin() || ownNewArticle(request.resource.data));
+      allow update: if isAdmin() && validArticle(request.resource.data);
       allow delete: if isAdmin();
     }
 
